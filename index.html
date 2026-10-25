@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nitro Type Ultimate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        },
+                        nitro: {
+                            dark: '#0f172a',
+                            card: '#1e293b',
+                            border: '#334155'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #0b0f19;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(34, 197, 94, 0.8); }
+        }
+        .glow-effect {
+            animation: pulse-glow 3s infinite;
+        }
+        .track-bg {
+            background: linear-gradient(90deg, #1e293b 0%, #0f172a 50%, #1e293b 100%);
+            background-size: 200% 100%;
+            animation: scrollTrack 20s linear infinite;
+        }
+        @keyframes scrollTrack {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col select-none">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <div id="app" class="flex-1 flex flex-col">
+
+        <!-- AUTH SCREEN -->
+        <div id="screen-auth" class="flex-1 flex items-center justify-center p-4 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10 pointer-events-none flex justify-around">
+                <div class="w-px h-full bg-gradient-to-b from-transparent via-emerald-500 to-transparent"></div>
+                <div class="w-px h-full bg-gradient-to-b from-transparent via-emerald-500 to-transparent"></div>
+                <div class="w-px h-full bg-gradient-to-b from-transparent via-emerald-500 to-transparent"></div>
+            </div>
+
+            <div class="bg-nitro-card border border-nitro-border p-8 rounded-2xl w-full max-w-md shadow-2xl relative z-10 backdrop-blur-md bg-opacity-95">
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500 bg-opacity-10 text-emerald-400 mb-4 text-3xl glow-effect">
+                        <i class="fa-solid fa-flag-checkered"></i>
+                    </div>
+                    <h1 class="text-3xl font-black tracking-wider text-white">NITRO<span class="text-emerald-500">TYPE</span></h1>
+                    <p class="text-slate-400 text-sm mt-1">Persistent accounts, trading & multiplayer racing!</p>
+                </div>
+
+                <!-- Auth Tabs -->
+                <div class="flex bg-slate-900 p-1 rounded-xl mb-6 border border-slate-800">
+                    <button id="tab-login-btn" onclick="switchAuthTab('login')" class="flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all text-white bg-emerald-600 shadow-lg">Sign In</button>
+                    <button id="tab-register-btn" onclick="switchAuthTab('register')" class="flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-white">Create Account</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Username</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-user"></i></span>
+                            <input type="text" id="login-username" required placeholder="Enter username" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Password</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-lock"></i></span>
+                            <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/25 transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-right-to-bracket"></i> Sign In to Account
+                    </button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Choose Username</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-user-plus"></i></span>
+                            <input type="text" id="reg-username" required placeholder="CoolRacer99" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Password</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-lock"></i></span>
+                            <input type="password" id="reg-password" required placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/25 transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-user-check"></i> Register & Save Account
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- DASHBOARD SCREEN -->
+        <div id="screen-dashboard" class="flex-1 flex flex-col hidden">
+            <!-- Navbar -->
+            <header class="bg-nitro-card border-b border-nitro-border px-6 py-4 flex items-center justify-between sticky top-0 z-40 backdrop-blur-md bg-opacity-90">
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-2.5 cursor-pointer" onclick="showDashboardTab('lobby')">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500 bg-opacity-10 text-emerald-400 flex items-center justify-center text-xl glow-effect">
+                            <i class="fa-solid fa-flag-checkered"></i>
+                        </div>
+                        <span class="text-xl font-black tracking-wider text-white">NITRO<span class="text-emerald-500">TYPE</span></span>
+                    </div>
+                    <nav class="hidden md:flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
+                        <button onclick="showDashboardTab('lobby')" id="nav-lobby" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all text-white bg-emerald-600 flex items-center gap-2"><i class="fa-solid fa-gamepad"></i> Lobby</button>
+                        <button onclick="showDashboardTab('garage')" id="nav-garage" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-white flex items-center gap-2"><i class="fa-solid fa-car"></i> Garage</button>
+                        <button onclick="showDashboardTab('trade')" id="nav-trade" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-white flex items-center gap-2"><i class="fa-solid fa-handshake"></i> Trading</button>
+                        <button onclick="showDashboardTab('leaderboard')" id="nav-leaderboard" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-white flex items-center gap-2"><i class="fa-solid fa-trophy"></i> Leaderboard</button>
+                        <button onclick="showDashboardTab('settings')" id="nav-settings" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-white flex items-center gap-2"><i class="fa-solid fa-gear"></i> Settings</button>
+                    </nav>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <!-- Cash badge -->
+                    <div class="bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl flex items-center gap-2.5">
+                        <div class="w-7 h-7 rounded-lg bg-amber-500 bg-opacity-20 text-amber-400 flex items-center justify-center text-sm font-bold">
+                            <i class="fa-solid fa-coins"></i>
+                        </div>
+                        <span id="user-cash" class="font-mono font-bold text-amber-400 text-sm">0</span>
+                    </div>
+
+                    <!-- Profile info -->
+                    <div class="flex items-center gap-3 bg-slate-900 border border-slate-800 pl-3 pr-4 py-1.5 rounded-xl">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white font-bold text-sm shadow-md" id="user-avatar-initial">U</div>
+                        <div class="text-left hidden sm:block">
+                            <div id="user-display-name" class="text-xs font-bold text-white truncate max-w-[100px]">Username</div>
+                            <div class="text-[10px] text-emerald-400 font-medium">Saved Account</div>
+                        </div>
+                        <button onclick="logout()" class="ml-2 text-slate-400 hover:text-red-400 transition-colors p-1" title="Sign Out">
+                            <i class="fa-solid fa-power-off"></i>
+                        </button>
+                    </div>
+
+                    <!-- Cheat Panel Button -->
+                    <button onclick="promptCheatPassword()" class="bg-purple-600 hover:bg-purple-700 text-white px-3.5 py-2.5 rounded-xl shadow-lg shadow-purple-600/30 transition-all flex items-center gap-2 text-sm font-semibold" title="Cheat Panel">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span class="hidden lg:inline">Cheats</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Mobile Navbar Bottom Bar -->
+            <div class="md:hidden fixed bottom-0 inset-x-0 bg-nitro-card border-t border-nitro-border p-2 z-40 flex justify-around">
+                <button onclick="showDashboardTab('lobby')" id="mob-nav-lobby" class="flex flex-col items-center gap-1 text-emerald-400 text-xs font-medium p-1">
+                    <i class="fa-solid fa-gamepad text-base"></i> Lobby
+                </button>
+                <button onclick="showDashboardTab('garage')" id="mob-nav-garage" class="flex flex-col items-center gap-1 text-slate-400 text-xs font-medium p-1">
+                    <i class="fa-solid fa-car text-base"></i> Garage
+                </button>
+                <button onclick="showDashboardTab('trade')" id="mob-nav-trade" class="flex flex-col items-center gap-1 text-slate-400 text-xs font-medium p-1">
+                    <i class="fa-solid fa-handshake text-base"></i> Trade
+                </button>
+                <button onclick="showDashboardTab('leaderboard')" id="mob-nav-leaderboard" class="flex flex-col items-center gap-1 text-slate-400 text-xs font-medium p-1">
+                    <i class="fa-solid fa-trophy text-base"></i> Ranks
+                </button>
+                <button onclick="showDashboardTab('settings')" id="mob-nav-settings" class="flex flex-col items-center gap-1 text-slate-400 text-xs font-medium p-1">
+                    <i class="fa-solid fa-gear text-base"></i> Settings
+                </button>
+            </div>
+
+            <!-- DASHBOARD TABS CONTENT -->
+            <main class="flex-1 p-6 pb-24 md:pb-6 max-w-7xl mx-auto w-full">
+
+                <!-- LOBBY TAB -->
+                <div id="tab-lobby" class="space-y-6">
+                    <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-emerald-900 via-slate-900 to-slate-900 border border-emerald-500/20 p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div class="space-y-4 max-w-xl text-center md:text-left">
+                            <span id="room-badge" class="bg-emerald-500 bg-opacity-20 text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider border border-emerald-500/30">Multiplayer Room: Public</span>
+                            <h2 class="text-3xl md:text-5xl font-black text-white tracking-wide">Ready to Race?</h2>
+                            <p class="text-slate-300 text-sm md:text-base leading-relaxed">Type short sentences fast, nitro boost your vehicle, and outpace opponents in real time! Share your URL room link with friends to race together.</p>
+                            <div class="pt-2 flex flex-wrap gap-3 justify-center md:justify-start">
+                                <button onclick="startRace()" class="px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-white text-lg font-extrabold rounded-2xl shadow-xl shadow-emerald-500/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-3">
+                                    <i class="fa-solid fa-flag-checkered text-xl"></i> Start Race
+                                </button>
+                                <button onclick="shareRoomLink()" class="px-5 py-4 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-2xl border border-slate-700 transition-colors flex items-center gap-2">
+                                    <i class="fa-solid fa-share-nodes"></i> Copy Invite Link
+                                </button>
+                            </div>
+                        </div>
+                        <div class="relative w-full max-w-xs md:max-w-sm flex items-center justify-center">
+                            <div class="absolute inset-0 bg-emerald-500 opacity-10 blur-3xl rounded-full"></div>
+                            <div id="lobby-car-preview" class="text-9xl filter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] transition-transform hover:scale-105 duration-300">
+                                🏎️
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Stats Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-nitro-card border border-nitro-border p-5 rounded-2xl">
+                            <div class="flex items-center justify-between text-slate-400 mb-2">
+                                <span class="text-xs font-bold uppercase tracking-wider">Total Races</span>
+                                <i class="fa-solid fa-road text-emerald-400"></i>
+                            </div>
+                            <div id="stat-races" class="text-2xl md:text-3xl font-black text-white">0</div>
+                        </div>
+                        <div class="bg-nitro-card border border-nitro-border p-5 rounded-2xl">
+                            <div class="flex items-center justify-between text-slate-400 mb-2">
+                                <span class="text-xs font-bold uppercase tracking-wider">Wins</span>
+                                <i class="fa-solid fa-trophy text-amber-400"></i>
+                            </div>
+                            <div id="stat-wins" class="text-2xl md:text-3xl font-black text-white">0</div>
+                        </div>
+                        <div class="bg-nitro-card border border-nitro-border p-5 rounded-2xl">
+                            <div class="flex items-center justify-between text-slate-400 mb-2">
+                                <span class="text-xs font-bold uppercase tracking-wider">Best WPM</span>
+                                <i class="fa-solid fa-gauge-high text-cyan-400"></i>
+                            </div>
+                            <div id="stat-best-wpm" class="text-2xl md:text-3xl font-black text-white">0</div>
+                        </div>
+                        <div class="bg-nitro-card border border-nitro-border p-5 rounded-2xl">
+                            <div class="flex items-center justify-between text-slate-400 mb-2">
+                                <span class="text-xs font-bold uppercase tracking-wider">Avg WPM</span>
+                                <i class="fa-solid fa-bolt text-purple-400"></i>
+                            </div>
+                            <div id="stat-avg-wpm" class="text-2xl md:text-3xl font-black text-white">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GARAGE TAB -->
+                <div id="tab-garage" class="space-y-6 hidden">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-2xl font-black text-white">Garage & Car Shop</h2>
+                            <p class="text-slate-400 text-sm">Purchase high-speed vehicles with your racing winnings.</p>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 self-start sm:self-auto">
+                            <span class="text-slate-400">Equipped:</span>
+                            <span id="garage-active-car-name" class="text-emerald-400 font-bold">Standard Racer</span>
+                        </div>
+                    </div>
+                    <div id="car-shop-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                </div>
+
+                <!-- TRADING TAB -->
+                <div id="tab-trade" class="space-y-6 hidden">
+                    <div>
+                        <h2 class="text-2xl font-black text-white">Player Trading Post</h2>
+                        <p class="text-slate-400 text-sm">Send cash and cars securely to other registered accounts.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-nitro-card border border-nitro-border p-6 rounded-3xl space-y-4">
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-paper-plane text-emerald-400"></i> Send Assets
+                            </h3>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Recipient Username</label>
+                                <input type="text" id="trade-recipient" placeholder="Enter other account username" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Cash Amount ($)</label>
+                                <input type="number" id="trade-cash-amount" value="0" min="0" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white font-mono text-sm focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Select Car to Trade</label>
+                                <select id="trade-car-select" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-emerald-500">
+                                    <option value="">None (Cash only)</option>
+                                </select>
+                            </div>
+                            <button onclick="executeTrade()" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/25 transition-all">
+                                Complete Secure Trade
+                            </button>
+                        </div>
+
+                        <div class="bg-nitro-card border border-nitro-border p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-2">
+                                    <i class="fa-solid fa-history text-cyan-400"></i> Trade Guidelines
+                                </h3>
+                                <ul class="space-y-3 text-sm text-slate-300 list-disc list-inside">
+                                    <li>Trades are instant between all registered accounts saved in this browser.</li>
+                                    <li>You cannot trade cars that you currently have equipped as your active vehicle.</li>
+                                    <li>Double check recipient usernames to ensure successful asset transfers.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-xs text-slate-400">
+                                <i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i> All transactions are verified and securely saved to your persistent browser database.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LEADERBOARD TAB -->
+                <div id="tab-leaderboard" class="space-y-6 hidden">
+                    <div>
+                        <h2 class="text-2xl font-black text-white">Global Leaderboard</h2>
+                        <p class="text-slate-400 text-sm">Top typing champions sorted by speed.</p>
+                    </div>
+                    <div class="bg-nitro-card border border-nitro-border rounded-2xl overflow-hidden shadow-xl">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-900 border-b border-slate-800 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                        <th class="py-4 px-6">Rank</th>
+                                        <th class="py-4 px-6">Racer</th>
+                                        <th class="py-4 px-6">Best WPM</th>
+                                        <th class="py-4 px-6">Wins</th>
+                                        <th class="py-4 px-6">Total Races</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaderboard-tbody" class="divide-y divide-slate-800/60 text-sm font-medium"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SETTINGS TAB -->
+                <div id="tab-settings" class="space-y-6 hidden">
+                    <div>
+                        <h2 class="text-2xl font-black text-white">Account Security & Settings</h2>
+                        <p class="text-slate-400 text-sm">Manage your password or delete your persistent account.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Change Password Form -->
+                        <div class="bg-nitro-card border border-nitro-border p-6 rounded-3xl space-y-4">
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-key text-amber-400"></i> Change Password
+                            </h3>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Current Password</label>
+                                <input type="password" id="settings-old-password" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">New Password</label>
+                                <input type="password" id="settings-new-password" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <button onclick="handleChangePassword()" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold rounded-xl shadow-lg transition-all">
+                                Update Password
+                            </button>
+                        </div>
+
+                        <!-- Delete Account -->
+                        <div class="bg-nitro-card border border-red-500/30 p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-lg font-bold text-red-400 flex items-center gap-2 mb-2">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Danger Zone
+                                </h3>
+                                <p class="text-slate-300 text-sm leading-relaxed">Deleting your account is permanent. All accumulated cash, purchased garage cars, and racing statistics saved in local storage will be erased immediately.</p>
+                            </div>
+                            <div>
+                                <button onclick="handleDeleteAccount()" class="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-lg shadow-red-600/30 transition-all">
+                                    Delete Account Permanently
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+        <!-- RACING ARENA SCREEN -->
+        <div id="screen-race" class="flex-1 flex flex-col hidden bg-slate-950">
+            <div class="bg-nitro-card border-b border-nitro-border px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <button onclick="abortRace()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 px-4 py-2 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2 border border-slate-700">
+                        <i class="fa-solid fa-arrow-left"></i> Leave Race
+                    </button>
+                    <div class="hidden sm:flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                        <i class="fa-solid fa-circle text-emerald-500 animate-pulse"></i> Live Multiplayer Room Active
+                    </div>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="text-center">
+                        <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Time</div>
+                        <div id="race-timer" class="mono-font text-lg font-bold text-white">0.0s</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Speed</div>
+                        <div id="race-wpm" class="mono-font text-lg font-bold text-emerald-400">0 WPM</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Accuracy</div>
+                        <div id="race-acc" class="mono-font text-lg font-bold text-cyan-400">100%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Track Lanes -->
+            <div class="p-6 bg-slate-900/50 border-b border-nitro-border relative overflow-hidden">
+                <div class="max-w-6xl mx-auto space-y-4">
+                    <div class="flex justify-between text-xs font-bold text-slate-500 uppercase tracking-wider px-2">
+                        <span>Start Line</span>
+                        <span>Finish Line</span>
+                    </div>
+                    <div id="race-lanes" class="space-y-3 relative track-bg p-4 rounded-2xl border border-slate-800"></div>
+                </div>
+            </div>
+
+            <!-- Typing Prompt Area -->
+            <div class="flex-1 flex flex-col items-center justify-center p-6 max-w-4xl mx-auto w-full space-y-6">
+                <div id="race-countdown" class="text-6xl font-black text-emerald-400 animate-bounce mb-2 hidden">3</div>
+
+                <div class="w-full bg-nitro-card border border-nitro-border rounded-2xl p-6 shadow-2xl relative">
+                    <div id="typing-text-display" class="mono-font text-lg sm:text-2xl leading-relaxed text-slate-400 select-none mb-6 min-h-[100px] max-h-[160px] overflow-hidden flex flex-wrap content-start"></div>
+                    <input type="text" id="typing-input" autocomplete="off" autocapitalize="off" spellcheck="false" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-4 text-white font-mono text-lg focus:outline-none focus:border-emerald-500 transition-colors" placeholder="Waiting for countdown..." disabled oninput="handleTypingInput(event)" onkeydown="handleTypingKeydown(event)">
+                </div>
+            </div>
+        </div>
+
+        <!-- RACE RESULTS MODAL -->
+        <div id="modal-results" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+            <div class="bg-nitro-card border border-nitro-border rounded-3xl p-8 max-w-md w-full shadow-2xl text-center space-y-6">
+                <div class="w-20 h-20 bg-emerald-500 bg-opacity-20 text-emerald-400 rounded-3xl mx-auto flex items-center justify-center text-4xl glow-effect">
+                    <i class="fa-solid fa-trophy" id="results-icon"></i>
+                </div>
+                <div>
+                    <h3 id="results-title" class="text-3xl font-black text-white">Race Finished!</h3>
+                    <p id="results-subtitle" class="text-slate-400 text-sm mt-1">You placed 1st in the multiplayer lobby.</p>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 bg-slate-900 p-4 rounded-2xl border border-slate-800">
+                    <div>
+                        <div class="text-[10px] text-slate-400 uppercase font-bold">WPM</div>
+                        <div id="res-wpm" class="text-xl font-black text-emerald-400 font-mono">0</div>
+                    </div>
+                    <div>
+                        <div class="text-[10px] text-slate-400 uppercase font-bold">Accuracy</div>
+                        <div id="res-acc" class="text-xl font-black text-cyan-400 font-mono">0%</div>
+                    </div>
+                    <div>
+                        <div class="text-[10px] text-slate-400 uppercase font-bold">Cash Won</div>
+                        <div id="res-cash" class="text-xl font-black text-amber-400 font-mono">+0</div>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button onclick="closeResultsAndLobby()" class="flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-colors">Return to Lobby</button>
+                    <button onclick="startRace()" class="flex-1 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-lg transition-all">Race Again</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASSWORD PROMPT MODAL FOR CHEATS -->
+        <div id="modal-cheat-auth" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+            <div class="bg-nitro-card border border-purple-500/30 rounded-3xl p-8 max-w-sm w-full shadow-2xl space-y-6">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-purple-500 bg-opacity-20 text-purple-400 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-4">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-white">Restricted Access</h3>
+                    <p class="text-slate-400 text-xs mt-1">Enter developer password to access cheat panel</p>
+                </div>
+                <div>
+                    <input type="password" id="cheat-password-input" placeholder="Enter password..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white text-center font-mono text-base focus:outline-none focus:border-purple-500">
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="closeCheatAuthModal()" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-sm">Cancel</button>
+                    <button onclick="verifyCheatPassword()" class="flex-1 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-purple-600/30">Unlock</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHEAT PANEL MODAL -->
+        <div id="modal-cheats" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+            <div class="bg-nitro-card border border-purple-500/30 rounded-3xl p-8 max-w-md w-full shadow-2xl space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-purple-500 bg-opacity-20 text-purple-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-black text-white">Developer Cheat Panel</h3>
+                            <p class="text-slate-400 text-xs">Modify coins & race state (Up to 1 Billion)</p>
+                        </div>
+                    </div>
+                    <button onclick="toggleCheatPanel()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Coin Modifier -->
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-3">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Coin Balance Modifier (Max 1,000,000,000)</label>
+                        <div class="flex gap-2">
+                            <input type="number" id="cheat-coin-amount" value="10000" min="0" max="1000000000" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono text-sm focus:outline-none focus:border-purple-500">
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 pt-1">
+                            <button onclick="applyCoinModifier('add')" class="py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/40 text-purple-300 font-bold rounded-xl text-xs">Add (+)</button>
+                            <button onclick="applyCoinModifier('subtract')" class="py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/40 text-purple-300 font-bold rounded-xl text-xs">Subtract (-)</button>
+                            <button onclick="applyCoinModifier('set')" class="py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-xs shadow">Set Exact</button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Quick Cheats</label>
+                        <button onclick="cheatAutoWin()" class="w-full py-3 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/40 text-purple-300 font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                            <i class="fa-solid fa-bolt"></i> Instant Auto-Win Current Race
+                        </button>
+                        <button onclick="cheatUnlockAll()" class="w-full py-3 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                            <i class="fa-solid fa-car"></i> Unlock All Garage Cars
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        /* ==========================================
+           URL ROOM HANDLING & AUDIO
+           ========================================== */
+        let currentRoomCode = 'PUBLIC-LOBBY';
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const room = urlParams.get('room');
+            if (room) {
+                currentRoomCode = room.toUpperCase();
+            } else {
+                currentRoomCode = 'ROOM-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+                // Update URL silently without reloading
+                const newUrl = window.location.pathname + '?room=' + currentRoomCode;
+                window.history.replaceState({}, '', newUrl);
+            }
+            document.getElementById('room-badge').innerText = `Multiplayer Room: ${currentRoomCode}`;
+        });
+
+        function shareRoomLink() {
+            const inviteUrl = window.location.href;
+            document.execCommand ? copyToClipboardLegacy(inviteUrl) : navigator.clipboard.writeText(inviteUrl);
+            showToast('Room invite link copied to clipboard!', 'success');
+        }
+
+        function copyToClipboardLegacy(text) {
+            const aux = document.createElement("input");
+            aux.setAttribute("value", text);
+            document.body.appendChild(aux);
+            aux.select();
+            document.execCommand("copy");
+            document.body.removeChild(aux);
+        }
+
+        let audioCtx = null;
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function playSound(type) {
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                const now = audioCtx.currentTime;
+
+                if (type === 'key') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400 + Math.random() * 150, now);
+                    gain.gain.setValueAtTime(0.03, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                } else if (type === 'nitro') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(120, now);
+                    osc.frequency.exponentialRampToValueAtTime(600, now + 0.3);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'win') {
+                    [440, 554, 659, 880].forEach((freq, i) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.type = 'sine';
+                        o.frequency.setValueAtTime(freq, now + i * 0.1);
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        g.gain.setValueAtTime(0.08, now + i * 0.1);
+                        g.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+                        o.start(now + i * 0.1);
+                        o.stop(now + 1.2);
+                    });
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        /* ==========================================
+           TOAST NOTIFICATIONS
+           ========================================== */
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto px-5 py-3 rounded-xl shadow-xl text-white font-medium text-sm flex items-center gap-3 transform translate-y-2 opacity-0 transition-all duration-300 ${
+                type === 'success' ? 'bg-emerald-600 border border-emerald-500' : 
+                type === 'error' ? 'bg-red-600 border border-red-500' : 'bg-purple-600 border border-purple-500'
+            }`;
+            const icon = type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-exclamation' : 'fa-wand-magic-sparkles';
+            toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        /* ==========================================
+           PERSISTENT DATABASE (LocalStorage Accounts)
+           ========================================== */
+        const CAR_CATALOG = [
+            { id: 'standard', name: 'Standard Racer', emoji: '🏎️', price: 0, speedMult: 1.0 },
+            { id: 'muscle', name: 'V8 Muscle', emoji: '🚗', price: 500, speedMult: 1.05 },
+            { id: 'cyber', name: 'Cyber Truck', emoji: '🛻', price: 1500, speedMult: 1.1 },
+            { id: 'f1', name: 'F1 Formula', emoji: '🏎️', price: 3500, speedMult: 1.15 },
+            { id: 'hyper', name: 'Hyper Starcat', emoji: '🚀', price: 7500, speedMult: 1.25 },
+            { id: 'ufo', name: 'Alien Cruiser', emoji: '🛸', price: 15000, speedMult: 1.4 }
+        ];
+
+        const TYPING_TEXTS = [
+            "The quick brown fox jumps over the lazy dog while typing fast on keyboards during an epic nitro race competition.",
+            "Technology evolves at lightning speed bringing artificial intelligence and quantum computing closer to everyday reality.",
+            "Success is not final failure is not fatal it is the courage to continue that truly counts in the long run.",
+            "Programming is the art of telling another human what the computer wants to do in clear and concise logic.",
+            "Racing cars at two hundred miles per hour requires intense concentration flawless reflexes and unwavering nerve.",
+            "Practice makes permanent so focus on accuracy first and your speed will naturally increase over time."
+        ];
+
+        let currentUser = null;
+
+        function loadUsersDB() {
+            try {
+                return JSON.parse(localStorage.getItem('nitrotech_users_v2')) || {};
+            } catch(e) { return {}; }
+        }
+
+        function saveUsersDB(users) {
+            localStorage.setItem('nitrotech_users_v2', JSON.stringify(users));
+        }
+
+        function switchAuthTab(tab) {
+            const loginBtn = document.getElementById('tab-login-btn');
+            const regBtn = document.getElementById('tab-register-btn');
+            const loginForm = document.getElementById('form-login');
+            const regForm = document.getElementById('form-register');
+
+            if (tab === 'login') {
+                loginBtn.className = "flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all text-white bg-emerald-600 shadow-lg";
+                regBtn.className = "flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-white";
+                loginForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
+            } else {
+                regBtn.className = "flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all text-white bg-emerald-600 shadow-lg";
+                loginBtn.className = "flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-white";
+                regForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('reg-username').value.trim();
+            const password = document.getElementById('reg-password').value;
+            if (!username || !password) return;
+
+            let users = loadUsersDB();
+            if (users[username]) {
+                showToast('Username already exists!', 'error');
+                return;
+            }
+
+            users[username] = {
+                password: password,
+                cash: 250,
+                races: 0,
+                wins: 0,
+                bestWpm: 0,
+                totalWpmSum: 0,
+                unlockedCars: ['standard'],
+                selectedCar: 'standard'
+            };
+
+            saveUsersDB(users);
+            showToast('Account registered and saved successfully!', 'success');
+            switchAuthTab('login');
+            document.getElementById('login-username').value = username;
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            let users = loadUsersDB();
+            if (!users[username] || users[username].password !== password) {
+                showToast('Invalid username or password!', 'error');
+                return;
+            }
+
+            currentUser = username;
+            showToast(`Welcome back, ${username}!`, 'success');
+            enterDashboard();
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('screen-dashboard').classList.add('hidden');
+            document.getElementById('screen-auth').classList.remove('hidden');
+            showToast('Signed out successfully.');
+        }
+
+        function enterDashboard() {
+            document.getElementById('screen-auth').classList.add('hidden');
+            document.getElementById('screen-dashboard').classList.remove('hidden');
+            updateDashboardUI();
+            showDashboardTab('lobby');
+        }
+
+        function updateDashboardUI() {
+            if (!currentUser) return;
+            let users = loadUsersDB();
+            let data = users[currentUser];
+
+            document.getElementById('user-cash').innerText = data.cash.toLocaleString();
+            document.getElementById('user-display-name').innerText = currentUser;
+            document.getElementById('user-avatar-initial').innerText = currentUser.charAt(0).toUpperCase();
+
+            document.getElementById('stat-races').innerText = data.races;
+            document.getElementById('stat-wins').innerText = data.wins;
+            document.getElementById('stat-best-wpm').innerText = data.bestWpm;
+            let avg = data.races > 0 ? Math.round(data.totalWpmSum / data.races) : 0;
+            document.getElementById('stat-avg-wpm').innerText = avg;
+
+            let activeCar = CAR_CATALOG.find(c => c.id === data.selectedCar) || CAR_CATALOG[0];
+            document.getElementById('lobby-car-preview').innerText = activeCar.emoji;
+            document.getElementById('garage-active-car-name').innerText = activeCar.name;
+
+            renderGarageShop();
+            renderTradeCarSelect();
+            renderLeaderboard();
+        }
+
+        function showDashboardTab(tab) {
+            ['lobby', 'garage', 'trade', 'leaderboard', 'settings'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                const navBtn = document.getElementById(`nav-${t}`);
+                if (navBtn) navBtn.className = "px-4 py-2 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-white flex items-center gap-2";
+                const mobBtn = document.getElementById(`mob-nav-${t}`);
+                if (mobBtn) mobBtn.className = "flex flex-col items-center gap-1 text-slate-400 text-xs font-medium p-1";
+            });
+
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tab}`);
+            if (activeNav) activeNav.className = "px-4 py-2 text-sm font-semibold rounded-lg transition-all text-white bg-emerald-600 flex items-center gap-2";
+            const activeMob = document.getElementById(`mob-nav-${tab}`);
+            if (activeMob) activeMob.className = "flex flex-col items-center gap-1 text-emerald-400 text-xs font-medium p-1";
+
+            if (tab === 'garage') renderGarageShop();
+            if (tab === 'trade') renderTradeCarSelect();
+            if (tab === 'leaderboard') renderLeaderboard();
+        }
+
+        /* ==========================================
+           GARAGE & TRADING SYSTEM
+           ========================================== */
+        function renderGarageShop() {
+            let users = loadUsersDB();
+            if (!users[currentUser]) return;
+            let data = users[currentUser];
+            const grid = document.getElementById('car-shop-grid');
+            grid.innerHTML = '';
+
+            CAR_CATALOG.forEach(car => {
+                const isUnlocked = data.unlockedCars.includes(car.id);
+                const isSelected = data.selectedCar === car.id;
+
+                const card = document.createElement('div');
+                card.className = `bg-nitro-card border rounded-3xl p-6 flex flex-col items-center justify-between transition-all relative overflow-hidden ${
+                    isSelected ? 'border-emerald-500 shadow-lg shadow-emerald-500/10' : 'border-nitro-border'
+                }`;
+
+                card.innerHTML = `
+                    ${isSelected ? '<span class="absolute top-4 right-4 bg-emerald-500 text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full">Equipped</span>' : ''}
+                    <div class="text-7xl my-6 filter drop-shadow-md">${car.emoji}</div>
+                    <div class="text-center w-full mb-6">
+                        <h4 class="text-lg font-bold text-white">${car.name}</h4>
+                        <div class="text-xs text-emerald-400 font-semibold mt-1">Speed Multiplier: +${Math.round((car.speedMult - 1) * 100)}%</div>
+                    </div>
+                    <div class="w-full">
+                        ${isUnlocked ? 
+                            (isSelected ? 
+                                `<button disabled class="w-full py-3 bg-slate-800 text-slate-400 font-bold rounded-xl text-sm">Equipped</button>` :
+                                `<button onclick="selectCar('${car.id}')" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-sm transition-colors">Select Car</button>`
+                            ) :
+                            `<button onclick="buyCar('${car.id}', ${car.price})" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold rounded-xl text-sm transition-colors flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-coins"></i> Buy for $${car.price.toLocaleString()}
+                            </button>`
+                        }
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function selectCar(carId) {
+            let users = loadUsersDB();
+            users[currentUser].selectedCar = carId;
+            saveUsersDB(users);
+            updateDashboardUI();
+            showToast('Car equipped successfully!');
+        }
+
+        function buyCar(carId, price) {
+            let users = loadUsersDB();
+            let data = users[currentUser];
+            if (data.cash < price) {
+                showToast('Not enough cash!', 'error');
+                return;
+            }
+            data.cash -= price;
+            data.unlockedCars.push(carId);
+            data.selectedCar = carId;
+            saveUsersDB(users);
+            updateDashboardUI();
+            showToast('Car purchased and equipped!', 'success');
+        }
+
+        function renderTradeCarSelect() {
+            let users = loadUsersDB();
+            if (!users[currentUser]) return;
+            let data = users[currentUser];
+            const select = document.getElementById('trade-car-select');
+            select.innerHTML = '<option value="">None (Cash only)</option>';
+
+            data.unlockedCars.forEach(carId => {
+                if (carId === data.selectedCar) return; // Cannot trade currently equipped active car
+                let car = CAR_CATALOG.find(c => c.id === carId);
+                if (car) {
+                    const opt = document.createElement('option');
+                    opt.value = car.id;
+                    opt.innerText = `${car.emoji} ${car.name}`;
+                    select.appendChild(opt);
+                }
+            });
+        }
+
+        function executeTrade() {
+            const recipient = document.getElementById('trade-recipient').value.trim();
+            const cashAmount = parseInt(document.getElementById('trade-cash-amount').value) || 0;
+            const carId = document.getElementById('trade-car-select').value;
+
+            if (!recipient) {
+                showToast('Please enter a recipient username!', 'error');
+                return;
+            }
+            if (recipient === currentUser) {
+                showToast('You cannot trade with yourself!', 'error');
+                return;
+            }
+
+            let users = loadUsersDB();
+            if (!users[recipient]) {
+                showToast('Recipient account does not exist!', 'error');
+                return;
+            }
+
+            let senderData = users[currentUser];
+            if (cashAmount < 0 || senderData.cash < cashAmount) {
+                showToast('Insufficient cash for this trade!', 'error');
+                return;
+            }
+
+            if (carId && (!senderData.unlockedCars.includes(carId) || senderData.selectedCar === carId)) {
+                showToast('Invalid car selected for trade!', 'error');
+                return;
+            }
+
+            // Execute transfer
+            senderData.cash -= cashAmount;
+            users[recipient].cash += cashAmount;
+
+            if (carId) {
+                senderData.unlockedCars = senderData.unlockedCars.filter(id => id !== carId);
+                if (!users[recipient].unlockedCars.includes(carId)) {
+                    users[recipient].unlockedCars.push(carId);
+                }
+            }
+
+            saveUsersDB(users);
+            updateDashboardUI();
+            document.getElementById('trade-recipient').value = '';
+            document.getElementById('trade-cash-amount').value = '0';
+            showToast(`Trade successfully completed with ${recipient}!`, 'success');
+        }
+
+        /* ==========================================
+           SETTINGS: PASSWORD CHANGE & DELETE ACCOUNT
+           ========================================== */
+        function handleChangePassword() {
+            const oldPass = document.getElementById('settings-old-password').value;
+            const newPass = document.getElementById('settings-new-password').value;
+
+            let users = loadUsersDB();
+            let data = users[currentUser];
+
+            if (!oldPass || !newPass) {
+                showToast('Please fill in both password fields!', 'error');
+                return;
+            }
+
+            if (data.password !== oldPass) {
+                showToast('Incorrect current password!', 'error');
+                return;
+            }
+
+            data.password = newPass;
+            saveUsersDB(users);
+            document.getElementById('settings-old-password').value = '';
+            document.getElementById('settings-new-password').value = '';
+            showToast('Password updated successfully!', 'success');
+        }
+
+        function handleDeleteAccount() {
+            if (!confirm('Are you absolutely sure you want to delete your account? This action cannot be undone.')) return;
+
+            let users = loadUsersDB();
+            delete users[currentUser];
+            saveUsersDB(users);
+            showToast('Account deleted permanently.');
+            logout();
+        }
+
+        /* ==========================================
+           LEADERBOARD
+           ========================================== */
+        function renderLeaderboard() {
+            let users = loadUsersDB();
+            let sorted = Object.keys(users).map(username => ({
+                username,
+                ...users[username]
+            })).sort((a, b) => b.bestWpm - a.bestWpm);
+
+            const tbody = document.getElementById('leaderboard-tbody');
+            tbody.innerHTML = '';
+
+            if (sorted.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-500">No racers found.</td></tr>`;
+                return;
+            }
+
+            sorted.forEach((u, index) => {
+                const tr = document.createElement('tr');
+                tr.className = u.username === currentUser ? 'bg-emerald-950/20' : '';
+                tr.innerHTML = `
+                    <td class="py-4 px-6 font-mono font-bold text-slate-400">#${index + 1}</td>
+                    <td class="py-4 px-6 font-bold text-white flex items-center gap-2.5">
+                        <div class="w-7 h-7 rounded-lg bg-slate-800 flex items-center justify-center text-xs text-emerald-400">${u.username.charAt(0).toUpperCase()}</div>
+                        ${u.username}
+                        ${u.username === currentUser ? '<span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded font-medium">You</span>' : ''}
+                    </td>
+                    <td class="py-4 px-6 font-mono font-bold text-emerald-400">${u.bestWpm} WPM</td>
+                    <td class="py-4 px-6 font-mono text-amber-400">${u.wins}</td>
+                    <td class="py-4 px-6 font-mono text-slate-300">${u.races}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* ==========================================
+           MULTIPLIER TYPING RACE SIMULATION
+           ========================================== */
+        let raceActive = false;
+        let raceInterval = null;
+        let raceStartTime = 0;
+        let currentText = "";
+        let typedIndex = 0;
+        let raceErrors = 0;
+        let totalTypedChars = 0;
+        let botRacers = [];
+        let playerCarEmoji = '🏎️';
+
+        function startRace() {
+            let users = loadUsersDB();
+            let data = users[currentUser];
+            let activeCar = CAR_CATALOG.find(c => c.id === data.selectedCar) || CAR_CATALOG[0];
+            playerCarEmoji = activeCar.emoji;
+
+            botRacers = [
+                { name: 'SpeedyBot', emoji: '🚗', speed: 65 + Math.random() * 20, progress: 0 },
+                { name: 'NitroPro', emoji: '🚀', speed: 75 + Math.random() * 25, progress: 0 },
+                { name: 'TypeMaster', emoji: '🛸', speed: 85 + Math.random() * 30, progress: 0 }
+            ];
+
+            currentText = TYPING_TEXTS[Math.floor(Math.random() * TYPING_TEXTS.length)];
+            typedIndex = 0;
+            raceErrors = 0;
+            totalTypedChars = 0;
+
+            document.getElementById('screen-dashboard').classList.add('hidden');
+            document.getElementById('screen-race').classList.remove('hidden');
+
+            renderRaceLanes();
+            renderTypingTextDisplay();
+
+            const countdownEl = document.getElementById('race-countdown');
+            const inputEl = document.getElementById('typing-input');
+            inputEl.disabled = true;
+            inputEl.value = '';
+
+            let count = 3;
+            countdownEl.innerText = count;
+            countdownEl.classList.remove('hidden');
+
+            let countInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownEl.innerText = count;
+                } else if (count === 0) {
+                    countdownEl.innerText = "GO!";
+                } else {
+                    clearInterval(countInterval);
+                    countdownEl.classList.add('hidden');
+                    inputEl.disabled = false;
+                    inputEl.focus();
+                    raceActive = true;
+                    raceStartTime = Date.now();
+                    startRaceLoop();
+                }
+            }, 1000);
+        }
+
+        function renderRaceLanes() {
+            const container = document.getElementById('race-lanes');
+            container.innerHTML = '';
+            let allRacers = [{ name: currentUser, emoji: playerCarEmoji, progress: 0, isPlayer: true }, ...botRacers];
+
+            allRacers.forEach((r, idx) => {
+                const lane = document.createElement('div');
+                lane.className = "relative h-12 bg-slate-900 rounded-xl border border-slate-800 flex items-center px-4 overflow-hidden";
+                lane.innerHTML = `
+                    <div class="absolute inset-y-0 left-0 bg-emerald-500/10 transition-all duration-150" style="width: ${r.progress}%"></div>
+                    <div class="flex items-center justify-between w-full relative z-10 text-xs font-bold text-slate-400">
+                        <span class="truncate max-w-[100px]">${r.name} ${r.isPlayer ? '(You)' : ''}</span>
+                        <div id="car-avatar-${idx}" class="text-2xl transition-all duration-150 transform -translate-x-1/2" style="margin-left: ${r.progress}%">
+                            ${r.emoji}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(lane);
+            });
+        }
+
+        function renderTypingTextDisplay() {
+            const display = document.getElementById('typing-text-display');
+            display.innerHTML = '';
+
+            for (let i = 0; i < currentText.length; i++) {
+                const span = document.createElement('span');
+                span.innerText = currentText[i];
+                span.id = `char-${i}`;
+                if (i === 0) span.className = "border-b-2 border-emerald-400 bg-emerald-500/10 text-white";
+                else span.className = "text-slate-500";
+                display.appendChild(span);
+            }
+        }
+
+        function handleTypingKeydown(e) {
+            if (!raceActive) return;
+            if (e.key === 'Backspace') {
+                e.preventDefault();
+                if (typedIndex > 0) {
+                    typedIndex--;
+                    const prevSpan = document.getElementById(`char-${typedIndex}`);
+                    prevSpan.className = "border-b-2 border-emerald-400 bg-emerald-500/10 text-white";
+                    const currSpan = document.getElementById(`char-${typedIndex + 1}`);
+                    if (currSpan) currSpan.className = "text-slate-500 border-b-0 bg-transparent";
+                    playSound('key');
+                }
+            }
+        }
+
+        function handleTypingInput(e) {
+            if (!raceActive) return;
+            const inputVal = e.target.value;
+            const typedChar = inputVal.slice(-1);
+            if (!typedChar) return;
+
+            totalTypedChars++;
+            const expectedChar = currentText[typedIndex];
+
+            if (typedChar === expectedChar) {
+                playSound('key');
+                const span = document.getElementById(`char-${typedIndex}`);
+                span.className = "text-emerald-400 border-b-0 bg-transparent";
+                typedIndex++;
+
+                if (typedIndex < currentText.length) {
+                    const nextSpan = document.getElementById(`char-${typedIndex}`);
+                    nextSpan.className = "border-b-2 border-emerald-400 bg-emerald-500/10 text-white";
+                } else {
+                    finishRace(true);
+                }
+            } else {
+                playSound('error');
+                raceErrors++;
+                const span = document.getElementById(`char-${typedIndex}`);
+                span.className = "text-red-400 bg-red-500/20 border-b-2 border-red-500";
+            }
+            e.target.value = '';
+        }
+
+        function startRaceLoop() {
+            if (raceInterval) clearInterval(raceInterval);
+
+            raceInterval = setInterval(() => {
+                if (!raceActive) return;
+
+                const elapsedSeconds = (Date.now() - raceStartTime) / 1000;
+                document.getElementById('race-timer').innerText = elapsedSeconds.toFixed(1) + 's';
+
+                const wordsTyped = (typedIndex / 5);
+                const currentWpm = elapsedSeconds > 0 ? Math.round((wordsTyped / elapsedSeconds) * 60) : 0;
+                document.getElementById('race-wpm').innerText = currentWpm + ' WPM';
+
+                const accuracy = totalTypedChars > 0 ? Math.max(0, Math.round(((totalTypedChars - raceErrors) / totalTypedChars) * 100)) : 100;
+                document.getElementById('race-acc').innerText = accuracy + '%';
+
+                let playerProgress = Math.min(100, (typedIndex / currentText.length) * 100);
+
+                botRacers.forEach((bot) => {
+                    bot.progress = Math.min(100, bot.progress + (bot.speed / 1500));
+                });
+
+                let allRacers = [{ name: currentUser, emoji: playerCarEmoji, progress: playerProgress, isPlayer: true }, ...botRacers];
+                allRacers.forEach((r, idx) => {
+                    const avatar = document.getElementById(`car-avatar-${idx}`);
+                    const parentLane = avatar?.parentElement?.parentElement;
+                    if (avatar && parentLane) {
+                        avatar.style.marginLeft = `${r.progress}%`;
+                        const progressBar = parentLane.querySelector('.absolute');
+                        if (progressBar) progressBar.style.width = `${r.progress}%`;
+                    }
+                });
+            }, 50);
+        }
+
+        function finishRace(playerWon) {
+            raceActive = false;
+            clearInterval(raceInterval);
+            playSound('win');
+
+            const elapsedSeconds = (Date.now() - raceStartTime) / 1000;
+            const wordsTyped = (currentText.length / 5);
+            const finalWpm = Math.max(15, Math.round((wordsTyped / elapsedSeconds) * 60));
+            const accuracy = totalTypedChars > 0 ? Math.max(0, Math.round(((totalTypedChars - raceErrors) / totalTypedChars) * 100)) : 100;
+            let cashEarned = playerWon ? 350 + Math.round(finalWpm * 1.5) : 100;
+
+            let users = loadUsersDB();
+            let data = users[currentUser];
+            data.races++;
+            if (playerWon) data.wins++;
+            if (finalWpm > data.bestWpm) data.bestWpm = finalWpm;
+            data.totalWpmSum += finalWpm;
+            data.cash += cashEarned;
+            saveUsersDB(users);
+
+            document.getElementById('results-icon').className = playerWon ? "fa-solid fa-trophy text-amber-400" : "fa-solid fa-flag-checkered text-slate-400";
+            document.getElementById('results-title').innerText = playerWon ? "Victory! 1st Place" : "Race Completed";
+            document.getElementById('results-subtitle').innerText = playerWon ? "You blazed past all opponents in the room!" : "Good effort! Keep practicing your typing.";
+            document.getElementById('res-wpm').innerText = finalWpm + " WPM";
+            document.getElementById('res-acc').innerText = accuracy + "%";
+            document.getElementById('res-cash').innerText = "+" + cashEarned;
+
+            document.getElementById('modal-results').classList.remove('hidden');
+        }
+
+        function abortRace() {
+            raceActive = false;
+            clearInterval(raceInterval);
+            document.getElementById('screen-race').classList.add('hidden');
+            document.getElementById('screen-dashboard').classList.remove('hidden');
+            updateDashboardUI();
+        }
+
+        function closeResultsAndLobby() {
+            document.getElementById('modal-results').classList.add('hidden');
+            document.getElementById('screen-race').classList.add('hidden');
+            document.getElementById('screen-dashboard').classList.remove('hidden');
+            updateDashboardUI();
+        }
+
+        /* ==========================================
+           PASSWORD PROTECTED CHEAT PANEL (ILOVEGAMES)
+           ========================================== */
+        function promptCheatPassword() {
+            document.getElementById('cheat-password-input').value = '';
+            document.getElementById('modal-cheat-auth').classList.remove('hidden');
+        }
+
+        function closeCheatAuthModal() {
+            document.getElementById('modal-cheat-auth').classList.add('hidden');
+        }
+
+        function verifyCheatPassword() {
+            const pass = document.getElementById('cheat-password-input').value;
+            if (pass === 'ILOVEGAMES') {
+                closeCheatAuthModal();
+                document.getElementById('modal-cheats').classList.remove('hidden');
+                showToast('Cheat panel unlocked!', 'success');
+            } else {
+                showToast('Incorrect cheat password!', 'error');
+            }
+        }
+
+        function toggleCheatPanel() {
+            document.getElementById('modal-cheats').classList.toggle('hidden');
+        }
+
+        function applyCoinModifier(action) {
+            const amount = parseInt(document.getElementById('cheat-coin-amount').value) || 0;
+            if (amount < 0 || amount > 1000000000) {
+                showToast('Amount must be between 0 and 1,000,000,000!', 'error');
+                return;
+            }
+
+            let users = loadUsersDB();
+            let data = users[currentUser];
+
+            if (action === 'add') {
+                data.cash = Math.min(1000000000, data.cash + amount);
+                showToast(`Added $${amount.toLocaleString()} coins!`, 'success');
+            } else if (action === 'subtract') {
+                data.cash = Math.max(0, data.cash - amount);
+                showToast(`Subtracted $${amount.toLocaleString()} coins!`, 'success');
+            } else if (action === 'set') {
+                data.cash = amount;
+                showToast(`Cash set to $${amount.toLocaleString()}!`, 'success');
+            }
+
+            saveUsersDB(users);
+            updateDashboardUI();
+            toggleCheatPanel();
+            playSound('nitro');
+        }
+
+        function cheatAutoWin() {
+            if (!raceActive) {
+                showToast('Start a race first to auto-win!', 'error');
+                return;
+            }
+            playSound('nitro');
+            showToast('Cheat Applied: Instant Auto-Win!', 'success');
+            toggleCheatPanel();
+            finishRace(true);
+        }
+
+        function cheatUnlockAll() {
+            let users = loadUsersDB();
+            users[currentUser].unlockedCars = CAR_CATALOG.map(c => c.id);
+            saveUsersDB(users);
+            updateDashboardUI();
+            playSound('nitro');
+            showToast('Cheat Applied: All Cars Unlocked!', 'success');
+            toggleCheatPanel();
+        }
+    </script>
+</body>
+</html>
